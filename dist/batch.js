@@ -1,5 +1,5 @@
 import { CompleteEvent, ProgressEvent, StartEvent } from "./events";
-import { ADD_TASK_ERROR, NO_TASKS_ERROR } from "./types/errors";
+import { ADD_TASK_ERROR, NO_TASKS_ERROR } from "./constants/errors";
 import { TaskResponseStatus } from "./types/task";
 import { validateConcurrency } from "./utils";
 const getDefaultQueue = () => [];

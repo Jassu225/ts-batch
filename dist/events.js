@@ -1,4 +1,4 @@
-import { COMPLETE_EVENT, PROGRESS_EVENT, START_EVENT } from "./types/events";
+import { COMPLETE_EVENT, PROGRESS_EVENT, START_EVENT, } from "./constants/events";
 function addTimestamp(detail) {
     return {
         ...detail,
