@@ -9,6 +9,7 @@ import {
   TaskResult,
 } from "./types";
 import { validateConcurrency } from "./utils";
+import * as EventTypes from "./event-types";
 
 type WrappedTask = {
   task: Task;
@@ -118,8 +119,8 @@ class Batch extends EventTarget {
         totalTasks: this.totalTasks,
         completedTasks: this.completedTasks,
         pendingTasks: this.totalTasks - this.completedTasks,
-        progress: this.completedTasks / this.totalTasks,
-        taskResult: this.taskResults[task.index],
+        progress: this.progress,
+        lastCompletedTaskResult: this.taskResults[task.index],
       })
     );
 
@@ -180,7 +181,17 @@ class Batch extends EventTarget {
   }
 
   public get progress(): number {
-    return this.totalTasks === 0 ? 0 : this.completedTasks / this.totalTasks;
+    return this.totalTasks === 0
+      ? 0
+      : Math.round((this.completedTasks * 10000) / this.totalTasks) / 100;
+  }
+
+  public addEventListener(
+    type: (typeof EventTypes)[keyof typeof EventTypes],
+    callback: EventListenerOrEventListenerObject | null,
+    options?: AddEventListenerOptions | boolean
+  ): void {
+    super.addEventListener(type, callback, options);
   }
 }
 

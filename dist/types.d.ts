@@ -28,7 +28,7 @@ export type StartEventDetail = {
 };
 export type ProgressEventDetail = ProgressStats & {
     timestamp: string;
-    taskResult: Readonly<TaskResult>;
+    lastCompletedTaskResult: Readonly<TaskResult>;
 };
 export type CompleteEventDetail = {
     taskResults: readonly Readonly<TaskResult>[];

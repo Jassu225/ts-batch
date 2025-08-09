@@ -40,7 +40,7 @@ export type StartEventDetail = {
 
 export type ProgressEventDetail = ProgressStats & {
   timestamp: string; // ISO string
-  taskResult: Readonly<TaskResult>;
+  lastCompletedTaskResult: Readonly<TaskResult>;
 };
 
 export type CompleteEventDetail = {

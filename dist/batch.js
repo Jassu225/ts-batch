@@ -86,8 +86,8 @@ class Batch extends EventTarget {
             totalTasks: this.totalTasks,
             completedTasks: this.completedTasks,
             pendingTasks: this.totalTasks - this.completedTasks,
-            progress: this.completedTasks / this.totalTasks,
-            taskResult: this.taskResults[task.index],
+            progress: this.progress,
+            lastCompletedTaskResult: this.taskResults[task.index],
         }));
         // check for completion
         if (this.completedTasks === this.totalTasks) {
@@ -138,7 +138,12 @@ class Batch extends EventTarget {
         return this.processPromise !== null;
     }
     get progress() {
-        return this.totalTasks === 0 ? 0 : this.completedTasks / this.totalTasks;
+        return this.totalTasks === 0
+            ? 0
+            : Math.round((this.completedTasks * 10000) / this.totalTasks) / 100;
+    }
+    addEventListener(type, callback, options) {
+        super.addEventListener(type, callback, options);
     }
 }
 export default Batch;
