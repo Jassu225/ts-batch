@@ -3,11 +3,7 @@ import {
   ProgressEventDetail,
   StartEventDetail,
 } from "./types/event-details";
-import {
-  COMPLETE_EVENT,
-  PROGRESS_EVENT,
-  START_EVENT,
-} from "./constants/events";
+import { COMPLETE_EVENT, PROGRESS_EVENT, START_EVENT } from "./types/events";
 
 type OmitTimestamp<T> = Omit<T, "timestamp">;
 function addTimestamp<T extends { timestamp: string }>(

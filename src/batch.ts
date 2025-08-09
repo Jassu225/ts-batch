@@ -3,7 +3,7 @@ import { BatchConfig } from "./types/config";
 import { ADD_TASK_ERROR, NO_TASKS_ERROR } from "./constants/errors";
 import { Task, TaskResult, TaskResponseStatus } from "./types/task";
 import { validateConcurrency } from "./utils";
-import * as EventTypes from "./constants/events";
+import * as EventTypes from "./types/events";
 
 type WrappedTask = {
   task: Task;
