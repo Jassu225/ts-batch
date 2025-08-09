@@ -1,15 +1,9 @@
 import { CompleteEvent, ProgressEvent, StartEvent } from "./events";
-import {
-  ADD_TASK_ERROR,
-  BatchConfig,
-  NO_TASKS_ERROR,
-  Task,
-  // TASK_TIMEOUT_ERROR,
-  TaskResponseStatus,
-  TaskResult,
-} from "./types";
+import { BatchConfig } from "./types/config";
+import { ADD_TASK_ERROR, NO_TASKS_ERROR } from "./types/errors";
+import { Task, TaskResult, TaskResponseStatus } from "./types/task";
 import { validateConcurrency } from "./utils";
-import * as EventTypes from "./event-types";
+import * as EventTypes from "./types/events";
 
 type WrappedTask = {
   task: Task;
