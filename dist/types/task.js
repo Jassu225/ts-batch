@@ -1,6 +1,6 @@
 export var TaskResponseStatus;
 (function (TaskResponseStatus) {
-    TaskResponseStatus["Success"] = "success";
-    TaskResponseStatus["Error"] = "error";
-    TaskResponseStatus["Timeout"] = "timeout";
+    TaskResponseStatus["SUCCESS"] = "success";
+    TaskResponseStatus["ERROR"] = "error";
+    TaskResponseStatus["TIMEOUT"] = "timeout";
 })(TaskResponseStatus || (TaskResponseStatus = {}));

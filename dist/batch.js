@@ -112,8 +112,8 @@ class Batch extends EventTarget {
         }
         const taskResult = {
             responseStatus: taskError !== null
-                ? TaskResponseStatus.Error
-                : TaskResponseStatus.Success,
+                ? TaskResponseStatus.ERROR
+                : TaskResponseStatus.SUCCESS,
             response: result,
             error: taskError,
             index: task.index,

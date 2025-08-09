@@ -10,13 +10,17 @@ export class StartEvent extends CustomEvent {
         super(START_EVENT, { detail: addTimestamp(detail) });
     }
 }
+StartEvent.type = START_EVENT;
 export class ProgressEvent extends CustomEvent {
     constructor(detail) {
         super(PROGRESS_EVENT, { detail: addTimestamp(detail) });
     }
 }
+ProgressEvent.type = PROGRESS_EVENT;
 export class CompleteEvent extends CustomEvent {
     constructor(detail) {
         super(COMPLETE_EVENT, { detail: addTimestamp(detail) });
     }
 }
+CompleteEvent.type = COMPLETE_EVENT;
+export * from "./types/event-details";

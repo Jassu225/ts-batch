@@ -19,16 +19,24 @@ export class StartEvent extends CustomEvent<StartEventDetail> {
   constructor(detail: OmitTimestamp<StartEventDetail>) {
     super(START_EVENT, { detail: addTimestamp(detail) });
   }
+
+  public static readonly type = START_EVENT;
 }
 
 export class ProgressEvent extends CustomEvent<ProgressEventDetail> {
   constructor(detail: OmitTimestamp<ProgressEventDetail>) {
     super(PROGRESS_EVENT, { detail: addTimestamp(detail) });
   }
+
+  public static readonly type = PROGRESS_EVENT;
 }
 
 export class CompleteEvent extends CustomEvent<CompleteEventDetail> {
   constructor(detail: OmitTimestamp<CompleteEventDetail>) {
     super(COMPLETE_EVENT, { detail: addTimestamp(detail) });
   }
+
+  public static readonly type = COMPLETE_EVENT;
 }
+
+export * from "./types/event-details";

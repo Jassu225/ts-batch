@@ -43,7 +43,8 @@ console.log("All tasks completed:", results);
 ### Advanced Usage with Event Handling
 
 ```javascript
-import Batch, { TaskResponseStatus } from "ts-batch-processor";
+import Batch from "ts-batch-processor";
+import { TaskResponseStatus } from "ts-batch-processor/task";
 
 const batch = new Batch({ concurrency: 2 });
 
@@ -90,7 +91,7 @@ try {
 
   // Results are guaranteed to be in the same order as tasks were added
   results.forEach((result, index) => {
-    if (result.responseStatus === TaskResponseStatus.Success) {
+    if (result.responseStatus === TaskResponseStatus.SUCCESS) {
       console.log(`Task ${index + 1} succeeded:`, result.response);
     } else {
       console.log(`Task ${index + 1} failed:`, result.error?.message);
@@ -106,23 +107,33 @@ try {
 ### Exports
 
 ```typescript
-import Batch, {
-  TaskResponseStatus,
-  START_EVENT,
-  PROGRESS_EVENT,
-  COMPLETE_EVENT,
-} from "ts-batch-processor";
+// Main exports
+import Batch from "ts-batch-processor";
+import type { BatchConfig } from "ts-batch-processor";
 
-// Or import specific types
+// Task-related imports
+import { TaskResponseStatus } from "ts-batch-processor/task";
+import type { Task, TaskResult } from "ts-batch-processor/task";
+
+// Event-related imports
+import {
+  StartEvent,
+  ProgressEvent,
+  CompleteEvent,
+} from "ts-batch-processor/events";
 import type {
-  BatchConfig,
-  Task,
-  TaskResult,
   ProgressStats,
   StartEventDetail,
   ProgressEventDetail,
   CompleteEventDetail,
-} from "ts-batch-processor";
+} from "ts-batch-processor/events";
+
+// Error constants
+import {
+  ADD_TASK_ERROR,
+  NO_TASKS_ERROR,
+  TASK_TIMEOUT_ERROR,
+} from "ts-batch-processor/errors";
 ```
 
 ### `new Batch(config?)`
@@ -185,7 +196,7 @@ Returns current progress as a percentage between 0 and 100 (with up to 2 decimal
 
 ### Events
 
-The batch processor emits three types of events. The `addEventListener` method is type-safe and will only accept valid event types (`"start"`, `"progress"`, or `"complete"`).
+The batch processor emits three types of events. The `addEventListener` method is type-safe and will only accept valid event types (`"start"`, `"progress"`, or `"complete"`). You can use string literals or the static `type` properties from event classes (e.g., `StartEvent.type`).
 
 #### `start` Event
 
@@ -198,9 +209,9 @@ batch.addEventListener("start", (event) => {
   console.log("Started at:", event.detail.timestamp);
 });
 
-// Or using imported constant for better refactoring safety
-import { START_EVENT } from "ts-batch-processor";
-batch.addEventListener(START_EVENT, (event) => {
+// Or using event class static property for better refactoring safety
+import { StartEvent } from "ts-batch-processor/events";
+batch.addEventListener(StartEvent.type, (event) => {
   console.log("Started processing", event.detail.totalTasks, "tasks");
   console.log("Started at:", event.detail.timestamp);
 });
@@ -226,9 +237,9 @@ batch.addEventListener("progress", (event) => {
   console.log("Latest result:", lastCompletedTaskResult);
 });
 
-// Or using imported constant
-import { PROGRESS_EVENT } from "ts-batch-processor";
-batch.addEventListener(PROGRESS_EVENT, (event) => {
+// Or using event class static property
+import { ProgressEvent } from "ts-batch-processor/events";
+batch.addEventListener(ProgressEvent.type, (event) => {
   console.log(`Progress: ${event.detail.progress}%`);
 });
 ```
@@ -245,9 +256,9 @@ batch.addEventListener("complete", (event) => {
   console.log("Completed at:", event.detail.timestamp);
 });
 
-// Or using imported constant
-import { COMPLETE_EVENT } from "ts-batch-processor";
-batch.addEventListener(COMPLETE_EVENT, (event) => {
+// Or using event class static property
+import { CompleteEvent } from "ts-batch-processor/events";
+batch.addEventListener(CompleteEvent.type, (event) => {
   console.log("All tasks completed!");
   console.log("Results:", event.detail.taskResults);
 });
@@ -258,20 +269,19 @@ batch.addEventListener(COMPLETE_EVENT, (event) => {
 #### `TaskResult`
 
 ```typescript
-import { TaskResponseStatus } from "ts-batch-processor";
+import { TaskResponseStatus } from "ts-batch-processor/task";
 
 type TaskResult = {
   index: number; // Original task index
-  responseStatus: TaskResponseStatus; // "success" | "error" | "timeout"
+  responseStatus: TaskResponseStatus; // "success" | "error"
   response: unknown | null; // Task return value (if successful)
   error: Error | null; // Error object (if failed)
 };
 
 // TaskResponseStatus enum values:
 enum TaskResponseStatus {
-  Success = "success",
-  Error = "error",
-  Timeout = "timeout",
+  SUCCESS = "success",
+  ERROR = "error",
 }
 ```
 
@@ -280,7 +290,8 @@ enum TaskResponseStatus {
 ### Example 1: API Calls with Rate Limiting
 
 ```javascript
-import Batch, { TaskResponseStatus } from "ts-batch-processor";
+import Batch from "ts-batch-processor";
+import { TaskResponseStatus } from "ts-batch-processor/task";
 
 const batch = new Batch({ concurrency: 2 }); // Limit to 2 concurrent requests
 
@@ -304,7 +315,7 @@ batch.addEventListener("progress", (event) => {
 
 const results = await batch.process();
 const users = results
-  .filter((result) => result.responseStatus === TaskResponseStatus.Success)
+  .filter((result) => result.responseStatus === TaskResponseStatus.SUCCESS)
   .map((result) => result.response);
 
 console.log("Successfully fetched users:", users);
@@ -354,7 +365,8 @@ console.log("Image processing complete!", results);
 ### Example 3: Error Handling and Retry Logic
 
 ```javascript
-import Batch, { TaskResponseStatus } from "ts-batch-processor";
+import Batch from "ts-batch-processor";
+import { TaskResponseStatus } from "ts-batch-processor/task";
 
 function createTaskWithRetry(fn, maxRetries = 3) {
   return async () => {
@@ -400,7 +412,8 @@ The batch processor handles errors gracefully:
 - **Order preservation**: Results are always returned in the same order as tasks were added
 
 ```javascript
-import Batch, { TaskResponseStatus } from "ts-batch-processor";
+import Batch from "ts-batch-processor";
+import { TaskResponseStatus } from "ts-batch-processor/task";
 
 const batch = new Batch();
 
@@ -415,7 +428,7 @@ const results = await batch.process();
 results.forEach((result, index) => {
   console.log(
     `Task ${index + 1}:`,
-    result.responseStatus === TaskResponseStatus.Success
+    result.responseStatus === TaskResponseStatus.SUCCESS
       ? result.response
       : result.error.message
   );

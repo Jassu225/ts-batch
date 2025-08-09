@@ -40,20 +40,20 @@
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./types": {
-      "import": "./dist/types/index.js",
-      "require": "./dist/types/index.js",
-      "types": "./dist/types/index.d.ts"
-    },
     "./errors": {
       "import": "./dist/constants/errors.js",
       "require": "./dist/constants/errors.js",
       "types": "./dist/constants/errors.d.ts"
     },
     "./events": {
-      "import": "./dist/types/events.js",
-      "require": "./dist/types/events.js",
-      "types": "./dist/types/events.d.ts"
+      "import": "./dist/events.js",
+      "require": "./dist/events.js",
+      "types": "./dist/events.d.ts"
+    },
+    "./task": {
+      "import": "./dist/types/task.js",
+      "require": "./dist/types/task.js",
+      "types": "./dist/types/task.d.ts"
     }
   },
   "files": [

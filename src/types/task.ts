@@ -1,9 +1,9 @@
 export type Task = () => Promise<unknown> | unknown;
 
 export enum TaskResponseStatus {
-  Success = "success",
-  Error = "error",
-  Timeout = "timeout",
+  SUCCESS = "success",
+  ERROR = "error",
+  TIMEOUT = "timeout",
 }
 
 export type TaskResult = {
