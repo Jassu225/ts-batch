@@ -1,3 +1,2 @@
 export * from "./batch";
-export * from "./types/config";
-export * from "./types/events";
+export * from "./types/index";

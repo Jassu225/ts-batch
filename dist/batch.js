@@ -1,7 +1,6 @@
 import { CompleteEvent, ProgressEvent, StartEvent } from "./events";
-import { ADD_TASK_ERROR, NO_TASKS_ERROR, 
-// TASK_TIMEOUT_ERROR,
-TaskResponseStatus, } from "./types";
+import { ADD_TASK_ERROR, NO_TASKS_ERROR } from "./types/errors";
+import { TaskResponseStatus } from "./types/task";
 import { validateConcurrency } from "./utils";
 const getDefaultQueue = () => [];
 const getDefaultTotalTasks = () => 0;

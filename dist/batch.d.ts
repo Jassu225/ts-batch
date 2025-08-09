@@ -1,5 +1,6 @@
-import { BatchConfig, Task, TaskResult } from "./types";
-import * as EventTypes from "./event-types";
+import { BatchConfig } from "./types/config";
+import { Task, TaskResult } from "./types/task";
+import * as EventTypes from "./types/events";
 declare class Batch extends EventTarget {
     private config;
     private queue;

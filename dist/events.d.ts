@@ -1,4 +1,4 @@
-import { CompleteEventDetail, ProgressEventDetail, StartEventDetail } from "./types";
+import { CompleteEventDetail, ProgressEventDetail, StartEventDetail } from "./types/event-details";
 type OmitTimestamp<T> = Omit<T, "timestamp">;
 export declare class StartEvent extends CustomEvent<StartEventDetail> {
     constructor(detail: OmitTimestamp<StartEventDetail>);
