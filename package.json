@@ -1,0 +1,56 @@
+{
+  "name": "js-batch",
+  "version": "1.0.0",
+  "description": "A batch processor with event emitter for browser and node.js",
+  "keywords": [
+    "batch",
+    "batch-processor",
+    "js-batch",
+    "js-batch-processor",
+    "ts-batch",
+    "ts-batch-processor",
+    "batch-processor-js",
+    "batch-processor-ts",
+    "batch-processor-browser",
+    "batch-processor-node",
+    "batch-processor-browser-ts",
+    "batch-processor-node-ts",
+    "batch-processor-browser-js",
+    "batch-processor-node-js",
+    "concurrency",
+    "concurrency-batch-processor",
+    "concurrency-batch-processor-js",
+    "concurrency-batch-processor-ts",
+    "concurrency-batch-processor-browser",
+    "concurrency-batch-processor-node",
+    "concurrency-batch-processor-browser-ts"
+  ],
+  "license": "MIT",
+  "author": "Jaswanth Sai Sattenapalli <jaswanthsaisattenapalli@gmail.com>",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "package.json",
+    "README.md",
+    "package-lock.json",
+    "tsconfig.json"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^24.2.0",
+    "typescript": "^5.9.2"
+  }
+}
