@@ -1,5 +1,5 @@
 {
-  "name": "js-batch",
+  "name": "ts-batch",
   "version": "1.0.0",
   "description": "A batch processor with event emitter for browser and node.js",
   "keywords": [
