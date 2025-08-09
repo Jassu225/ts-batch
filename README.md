@@ -1,6 +1,9 @@
 # TS-Batch-Processor
 
-A powerful, event-driven batch processor for JavaScript/TypeScript that runs in both Node.js and browsers. Process multiple tasks concurrently with built-in error handling, progress tracking, and comprehensive event system.
+![NPM Version](https://img.shields.io/npm/v/ts-batch-processor)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/jassu225/ts-batch/publish.yaml?color=f7643b)
+
+A simple, powerful, event-driven batch processor for JavaScript/TypeScript that runs in both Node.js and browsers. Process multiple tasks concurrently with built-in error handling, progress tracking, and comprehensive event system.
 
 ## ✨ Features
 
