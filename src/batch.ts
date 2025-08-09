@@ -1,6 +1,11 @@
 import { CompleteEvent, ProgressEvent, StartEvent } from "./events";
 import { BatchConfig } from "./types/config";
-import { ADD_TASK_ERROR, NO_TASKS_ERROR } from "./constants/errors";
+import {
+  CANNOT_ADD_TASK_DURING_PROCESSING_ERROR,
+  CANNOT_RESET_DURING_PROCESSING_ERROR,
+  NO_TASKS_ERROR,
+  TASK_MUST_BE_FUNCTION_ERROR,
+} from "./constants/errors";
 import { Task, TaskResult, TaskResponseStatus } from "./types/task";
 import { validateConcurrency } from "./utils";
 import * as EventTypes from "./types/events";
@@ -10,12 +15,17 @@ type WrappedTask = {
   index: number;
 };
 
-const getDefaultQueue = (): WrappedTask[] => [];
-const getDefaultTotalTasks = (): number => 0;
-const getDefaultCompletedTasks = (): number => 0;
-const getDefaultProcessPromise = (): Promise<Readonly<TaskResult>[]> | null =>
-  null;
-const getDefaultTaskResults = (): TaskResult[] => [];
+export const getDefaultQueue = (): WrappedTask[] => [];
+export const getDefaultTotalTasks = (): number => 0;
+export const getDefaultCompletedTasks = (): number => 0;
+export const getDefaultProcessPromise = (): Promise<
+  Readonly<TaskResult>[]
+> | null => null;
+export const getDefaultTaskResults = (): TaskResult[] => [];
+export const getDefaultConcurrency = (): number =>
+  typeof navigator !== "undefined" && navigator.hardwareConcurrency
+    ? navigator.hardwareConcurrency
+    : 10;
 
 class Batch extends EventTarget {
   private config: BatchConfig;
@@ -28,10 +38,7 @@ class Batch extends EventTarget {
 
   constructor(config: Partial<BatchConfig> = {}) {
     super();
-    const concurrency =
-      config.concurrency ||
-      (typeof navigator !== "undefined" && navigator.hardwareConcurrency) ||
-      10;
+    const concurrency = config.concurrency ?? getDefaultConcurrency();
 
     validateConcurrency(concurrency);
 
@@ -45,35 +52,37 @@ class Batch extends EventTarget {
   }
 
   public add(task: Task): void {
-    if (this.processPromise) {
-      throw ADD_TASK_ERROR;
+    if (this.isProcessing) {
+      throw CANNOT_ADD_TASK_DURING_PROCESSING_ERROR;
     }
     if (typeof task !== "function") {
-      throw new Error("Task must be a function");
+      throw TASK_MUST_BE_FUNCTION_ERROR;
     }
     this.queue.push({ task, index: this.totalTasks });
     ++this.totalTasks;
   }
 
-  public async process(): Promise<Readonly<TaskResult>[]> {
+  public process(): Promise<Readonly<TaskResult>[]> {
     if (this.processPromise) {
       return this.processPromise;
     }
     if (this.totalTasks === 0) {
-      throw NO_TASKS_ERROR;
+      return Promise.reject(NO_TASKS_ERROR);
     }
 
     this.taskResults = Array.from({ length: this.totalTasks });
+
+    // Test: store promise without .then() chain to see if that's the issue
     this.processPromise = new Promise<Readonly<TaskResult>[]>(
       async (resolve) => {
         await this.startProcessing();
-        resolve(this.taskResults.map((t) => Object.freeze(t)));
+        const results = this.taskResults.map((t) => Object.freeze(t));
+        // dispatch complete event
+        this.dispatchEvent(new CompleteEvent({ taskResults: results }));
+        resolve(results);
       }
-    ).then((taskResults) => {
-      // dispatch complete event
-      this.dispatchEvent(new CompleteEvent({ taskResults }));
-      return taskResults;
-    });
+    );
+
     return this.processPromise;
   }
 
@@ -164,20 +173,10 @@ class Batch extends EventTarget {
   }
 
   public reset(): void {
-    if (this.processPromise) {
-      throw new Error("Cannot reset while processing is in progress");
+    if (this.isProcessing) {
+      throw CANNOT_RESET_DURING_PROCESSING_ERROR;
     }
     this.setToDefault();
-  }
-
-  public get isProcessing(): boolean {
-    return this.processPromise !== null;
-  }
-
-  public get progress(): number {
-    return this.totalTasks === 0
-      ? 0
-      : Math.round((this.completedTasks * 10000) / this.totalTasks) / 100;
   }
 
   public addEventListener(
@@ -186,6 +185,26 @@ class Batch extends EventTarget {
     options?: AddEventListenerOptions | boolean
   ): void {
     super.addEventListener(type, callback, options);
+  }
+
+  public get isProcessing(): boolean {
+    return (
+      this.processPromise !== null && this.completedTasks < this.totalTasks
+    );
+  }
+
+  public get progress(): number {
+    return this.totalTasks === 0
+      ? 0
+      : Math.round((this.completedTasks * 10000) / this.totalTasks) / 100;
+  }
+
+  public get size(): number {
+    return this.totalTasks;
+  }
+
+  public get concurrency(): number {
+    return this.config.concurrency;
   }
 }
 
