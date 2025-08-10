@@ -73,5 +73,13 @@
     "jest": "^30.0.5",
     "ts-jest": "^29.4.1",
     "typescript": "^5.9.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jassu225/ts-batch"
+  },
+  "homepage": "https://github.com/Jassu225/ts-batch/blob/main/README.md",
+  "publishConfig": {
+    "access": "public"
   }
 }
